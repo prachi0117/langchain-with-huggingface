@@ -3,9 +3,10 @@ import streamlit as st
 from langchain.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from langchain.chains.summarize import load_summarize_chain
-from langchain_community.document_loaders import YoutubeLoader, UnstructuredURLLoader
+from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain_huggingface import HuggingFaceEndpoint
 import os
+import yt_dlp
 
 # Streamlit App Configuration
 st.set_page_config(page_title="LangChain: Summarize Text From YT or Website", page_icon="🦜")
@@ -36,12 +37,23 @@ if st.button("Summarize the Content from YT or Website"):
     else:
         try:
             with st.spinner("Waiting..."):
-                # Loading the website or YouTube video data
+                # Handling YouTube content using yt-dlp
                 if "youtube.com" in generic_url:
                     try:
-                        loader = YoutubeLoader.from_youtube_url(generic_url, add_video_info=True)
+                        ydl_opts = {
+                            'quiet': True,
+                            'skip_download': True,
+                            'force_generic_extractor': True,
+                            'format': 'bestaudio/best',
+                        }
+                        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                            info_dict = ydl.extract_info(generic_url, download=False)
+                            video_title = info_dict.get('title', 'No title found')
+                            video_description = info_dict.get('description', 'No description found')
+                            content = f"{video_title}\n\n{video_description}"
+                            docs = [{"page_content": content}]
                     except Exception as yt_error:
-                        st.error("Failed to load YouTube video. There might be an issue with the video or the URL.")
+                        st.error("Failed to load YouTube video content.")
                         st.info("Please try another URL or report the issue.")
                         raise yt_error
                 else:
@@ -50,7 +62,7 @@ if st.button("Summarize the Content from YT or Website"):
                         ssl_verify=False,
                         headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"}
                     )
-                docs = loader.load()
+                    docs = loader.load()
 
                 # Chain for Summarization
                 chain = load_summarize_chain(llm, chain_type="stuff", prompt=prompt)
