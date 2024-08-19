@@ -12,7 +12,7 @@ import validators
 load_dotenv()
 
 # Get the HuggingFace API Token from environment variables
-hf_api_key = os.getenv("HUGGINGFACE_API_TOKEN")
+hf_api_key = os.getenv("HF_TOKEN")
 
 # Streamlit app configuration
 st.set_page_config(page_title=" Summarize Text From YT or Website")
