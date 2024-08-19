@@ -15,17 +15,17 @@ load_dotenv()
 hf_api_key = os.getenv("HF_TOKEN")
 
 # Streamlit app configuration
-st.set_page_config(page_title=" Summarize Text From YT or Website")
+st.set_page_config(page_title="Langchain: Summarize Text From YT or Website")
 st.markdown("""
     <style>
     .main-title {
-      
+        
         font-size: 40px;
         font-weight: bold;
         text-align: center;
     }
     .subheader {
-      
+        
         font-size: 30px;
         font-weight: bold;
     }
