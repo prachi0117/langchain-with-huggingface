@@ -13,7 +13,7 @@ load_dotenv()
 
 # Get the HuggingFace API Token from environment variables
 hf_api_key = os.getenv("HF_TOKEN")
-
+st.write(f"Debug: Using HF API Key: {hf_api_key}") 
 # Streamlit app configuration
 st.set_page_config(page_title="Langchain: Summarize Text From YT or Website")
 st.markdown("""
