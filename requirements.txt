@@ -29,3 +29,9 @@ numexpr
 cassio
 datasets
 gradio
+youtube-transcript-api
+pytube
+numexpr
+cassio
+datasets
+gradio
